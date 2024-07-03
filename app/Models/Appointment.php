@@ -14,6 +14,8 @@ class Appointment extends Model
         'patient_id',
         'appointment_date',
         'appointment_time',
+        'appointment_endtime',
+        'is_complete'
     ];
 
     public function doctor(){

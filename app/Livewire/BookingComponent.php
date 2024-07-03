@@ -15,40 +15,63 @@ class BookingComponent extends Component
     public $selectedDate;
     public $availableDates = [];
     public $timeSlots = [];
-
+    public $existTime = [];
+    public $selectedStartTime;
+    public $selectedEndTime;
+    public $appointmentBooked = false;
+    
+    
     public function mount($doctor)
     {   
         $this->doctor_details = $doctor;
 
         $this->fetchAvailableDates($this->doctor_details);
     }
-
-    public function bookAppointment($slot){
-        $carbonDate = Carbon::parse($this->selectedDate)->format('Y-m-d');
-        $newAppointment = new Appointment();
-        $newAppointment->patient_id = auth()->user()->id;
-        $newAppointment->doctor_id = $this->doctor_details->id;
-        $newAppointment->appointment_date = $carbonDate;
-        $newAppointment->appointment_time = $slot;
-        $newAppointment->save();
-        
-        $appointmentEmailData = [
-            'date' => $this->selectedDate,
-            'time' => Carbon::parse($slot)->format('H:i A'),
-            'location' => '123 Medical Street, Health City',
-            'patient_name' => auth()->user()->name,
-            'patient_email' => auth()->user()->email,
-            'doctor_name' => $this->doctor_details->doctorUser->name,
-            'doctor_email' => $this->doctor_details->doctorUser->email,
-            'doctor_specialization' => $this->doctor_details->speciality->speciality_name,
-        ];
-        // dd($appointmentEmailData);
-        $this->sendAppointmentNotification($appointmentEmailData);
-
-        session()->flash('message','appointment with Dr.'.$this->doctor_details->doctorUser->name.' on '.$this->selectedDate.$slot.' was created!');
-
-        return $this->redirect('/my/appointments',navigate: true);
+   
+    public function selectStartTime($startTime)
+    {
+        if (!$this->appointmentBooked) {
+            $this->selectedStartTime = $startTime;
+        }
     }
+    
+    public function selectEndTime($endTime)
+    {
+        if (!$this->appointmentBooked) {
+            $this->selectedEndTime = $endTime;
+        }
+    }
+
+    public function bookAppointment(){
+        if ($this->selectedStartTime && $this->selectedEndTime && !$this->appointmentBooked) {
+            $carbonDate = Carbon::parse($this->selectedDate)->format('Y-m-d');
+            $newAppointment = new Appointment();
+            $newAppointment->patient_id = auth()->user()->id;
+            $newAppointment->doctor_id = $this->doctor_details->id;
+            $newAppointment->appointment_date = $carbonDate;
+            $newAppointment->appointment_time = $this->selectedStartTime;
+            $newAppointment->appointment_endtime = $this->selectedEndTime;
+            $newAppointment->save();
+            
+            $appointmentEmailData = [
+                'date' => $this->selectedDate,
+                'time' => Carbon::parse($this->selectedStartTime)->format('H:i A'),
+                'end_time' => Carbon::parse($this->selectedEndTime)->format('H:i A'),
+                'location' => '123 Medical Street, Health City',
+                'patient_name' => auth()->user()->name,
+                'patient_email' => auth()->user()->email,
+                'doctor_name' => $this->doctor_details->doctorUser->name,
+                'doctor_email' => $this->doctor_details->doctorUser->email,
+                'doctor_specialization' => $this->doctor_details->speciality->speciality_name,
+            ];
+            $this->sendAppointmentNotification($appointmentEmailData);
+    
+            session()->flash('message','appointment with Dr.'.$this->doctor_details->doctorUser->name.' on '.$this->selectedStartTime.' was created!');
+    
+            return $this->redirect('/my/appointments',navigate: true);
+        }
+    }
+    
     public function fetchAvailableDates($doctor)
     {
         $schedules = DoctorSchedule::where('doctor_id', $doctor->id)
@@ -98,26 +121,46 @@ class BookingComponent extends Component
             $toTime = Carbon::createFromFormat('H:i:s', $schedule->to);
 
             $slots = [];
+            $timeExist = [];
             while ($fromTime->lessThan($toTime)) {
-
                 $timeSlot = $fromTime->format('H:i:s');
                 $appointmentExists = Appointment::where('doctor_id',  $doctor->id)
                     ->where('appointment_date', $carbonDate)
                     ->where('appointment_time', $timeSlot)
                     ->exists();
+            
                 if (!$appointmentExists) {
                     $slots[] = $timeSlot;
+                }else {
+                    $appointmentExists = Appointment::where('doctor_id',  $doctor->id)
+                    ->where('appointment_date', $carbonDate)
+                    ->where('appointment_time', $timeSlot)
+                    ->first();
+
+                    $startTime = $appointmentExists->appointment_time; 
+                    $endTime = $appointmentExists->appointment_endtime; 
+
+                        $start = Carbon::createFromFormat('H:i:s', $startTime);
+                        $end = Carbon::createFromFormat('H:i:s', $endTime);
+                        
+                        while ($start->lessThanOrEqualTo($end)) {
+                            $timeExist[] = $start->format('H:i:s');
+                            $start->addMinute(30);
+                        }
+                               
                 }
 
-                $fromTime->addHour();
+                $fromTime->addMinute(30);
             }
             
+            $this->existTime = $timeExist;
+
             $this->timeSlots = $slots;
-                    // dd($this->timeSlots);
 
         } else {
             $this->timeSlots = [];
-        }
+        }        
+        $this->timeSlots = array_diff($this->timeSlots, $this->existTime);
     }
 
     public function sendAppointmentNotification($appointmentData)

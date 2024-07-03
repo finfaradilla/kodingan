@@ -28,17 +28,55 @@
             <h4>Selected Date: {{ $selectedDate }}</h4>
         </div>
     @endif
-    <div>
         <h2 class="text-xl font-bold mb-2">Available Time Slots</h2>
-        <div class="flex flex-wrap">
-            @foreach ($timeSlots as $slot)
-                <button class="m-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-700" 
-                type="button"
-                wire:click="bookAppointment('{{$slot}}')"
-                wire:confirm="Are really want to book appointment on {{ $selectedDate }}, {{ $slot }} ?">
-                    {{ date('H:i',strtotime($slot)) }}                 </button>
-            @endforeach
-        </div>
+       
+
+      <div class="flex flex-wrap">
+        @foreach ($timeSlots as $startTime)
+            <div class="m-2">
+                <button class="m-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                        type="button"
+                        wire:click="selectStartTime('{{ $startTime }}')"
+                        wire:loading.attr="disabled">
+                    Start: {{ date('H:i', strtotime($startTime)) }}
+                </button>
+            </div>
+        @endforeach
+    </div>
+    
+    <div class="flex flex-wrap">
+      @foreach ($timeSlots as $endTime)
+          <div class="m-2">
+              <button class="m-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                      type="button"
+                      wire:click="selectEndTime('{{ $endTime }}')"
+                      wire:loading.attr="disabled">
+                  End: {{ date('H:i', strtotime($endTime)) }}
+              </button>
+          </div>
+      @endforeach
+  </div>
+
+  <div class="mt-4">
+    <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+            wire:click="bookAppointment"
+            wire:loading.attr="disabled">
+        Book Appointment
+    </button>
+</div>
+
+  {{-- @if ($selectedStartTime && $selectedEndTime)
+  <div class="mt-4">
+      <button class="p-2 bg-green-500 text-white rounded hover:bg-green-700"
+              type="button"
+              wire:click="bookAppointment('{{ $selectedStartTime }}', '{{ $selectedEndTime }}')"
+              wire:confirm="Are you sure you want to book appointments from {{ $selectedStartTime }} to {{ $selectedEndTime }} on {{ $selectedDate }}?">
+          Book Appointment: {{ date('H:i', strtotime($selectedStartTime)) }} to {{ date('H:i', strtotime($selectedEndTime)) }}
+      </button>
+  </div>
+@endif --}}
+
+</div>
     </div>
     </div>
     <!-- End Col -->

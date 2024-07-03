@@ -46,6 +46,17 @@
                     {{ date('H:i',strtotime($slot)) }}                 </button>
             @endforeach
         </div>
+
+        @if ($appointment_details->is_complete != 1)
+        <div class="mt-4">
+            <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                    wire:click="updateApprove('{{ $appointment_details->id }}')"
+                    wire:loading.attr="disabled">
+                Approve
+            </button>
+        </div>
+        @endif
+        
     </div>
     </div>
     <!-- End Col -->

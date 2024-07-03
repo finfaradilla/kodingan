@@ -39,7 +39,7 @@
                     <th scope="col" class="px-6 py-3 text-start">
                     <div class="flex items-center gap-x-2">
                       <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                          Patient Name
+                          User Name
                       </span>
                     </div>
                   </th>
@@ -52,7 +52,7 @@
                     <th scope="col" class="px-6 py-3 text-start">
                       <div class="flex items-center gap-x-2">
                         <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                          Doctor
+                          Room
                         </span>
                       </div>
                     </th>
@@ -61,7 +61,7 @@
                 <th scope="col" class="px-6 py-3 text-start">
                   <div class="flex items-center gap-x-2">
                     <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                      Appointment Date
+                      Booked Date
                     </span>
                   </div>
                 </th>
@@ -69,10 +69,20 @@
                 <th scope="col" class="px-6 py-3 text-start">
                   <div class="flex items-center gap-x-2">
                     <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                      Appointment Time
+                      Booked Time
                     </span>
                   </div>
                 </th>
+
+
+                <th scope="col" class="px-6 py-3 text-start">
+                  <div class="flex items-center gap-x-2">
+                    <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
+                      Booked End Time
+                    </span>
+                  </div>
+                </th>
+
 
                 <th scope="col" class="px-6 py-3 text-start">
                   <div class="flex items-center gap-x-2">
@@ -81,6 +91,7 @@
                     </span>
                   </div>
                 </th>
+
                 <th scope="col" class="px-6 py-3 text-start">
                   <div class="flex items-center gap-x-2">
                     <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
@@ -132,6 +143,12 @@
                           </a>
                         </td>
                         <td class="size-px whitespace-nowrap align-top">
+                          <a class="block p-6" href="#">
+                            <span class="text-sm text-gray-600 dark:text-neutral-400">{{ date('H:i A',strtotime($appointment->appointment_endtime))}}</span>
+                          </a>
+                        </td>
+
+                        <td class="size-px whitespace-nowrap align-top">
                           <div class="block p-6" href="#">
                             @if($appointment->is_complete == 1)
                             <span class="py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium bg-teal-100 text-teal-800 rounded-full dark:bg-teal-500/10 dark:text-teal-500">
@@ -150,6 +167,8 @@
                             @endif
                           </div>
                         </td>
+
+
                         <td class="size-px whitespace-nowrap align-top">
                           <div class="flex p-6">
                             @if (auth()->user()->role == 0)
@@ -163,7 +182,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                     </svg>
-                                  </a>
+                                  </a>                      
                             @else
                                 <a href="/admin/reschedule/{{$appointment->id}}" class="bg-blue-500 rounded text-white p-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">

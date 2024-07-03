@@ -2,8 +2,7 @@
 <div class="max-w-[85rem] px-4 py-5 sm:px-6 lg:px-8 lg:py-7 mx-auto">
   <!-- Title -->
   <div class="max-w-2xl mx-auto text-center mb-5 lg:mb-7">
-    <h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Our Featured Doctors</h2>
-    <p class="mt-1 text-gray-600 dark:text-neutral-400">Specialists</p>
+    <h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Room</h2>
   </div>
   <!-- End Title -->
   

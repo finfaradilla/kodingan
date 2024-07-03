@@ -1,7 +1,7 @@
 <!-- Table Section -->
 <div class="max-w-[85rem] px-4 py-5 sm:px-6 lg:px-8 lg:py-7 mx-auto">
   <div class="my-2">
-      <h5 class="text-gray-500 ">Recent Appointments</h5>
+      <h5 class="text-gray-500 ">Recent Book</h5>
   </div>
   <!-- Card -->
   <div class="flex flex-col">
@@ -19,7 +19,7 @@
                     <th scope="col" class="px-6 py-3 text-start">
                     <div class="flex items-center gap-x-2">
                       <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                          Patient Name
+                          User Name
                       </span>
                     </div>
                   </th>
@@ -31,7 +31,7 @@
                     <th scope="col" class="px-6 py-3 text-start">
                       <div class="flex items-center gap-x-2">
                         <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                          Doctor
+                          Room
                         </span>
                       </div>
                     </th>
@@ -41,7 +41,7 @@
                 <th scope="col" class="px-6 py-3 text-start">
                   <div class="flex items-center gap-x-2">
                     <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                      Appointment Date
+                      Book date
                     </span>
                   </div>
                 </th>
@@ -49,7 +49,7 @@
                 <th scope="col" class="px-6 py-3 text-start">
                   <div class="flex items-center gap-x-2">
                     <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                      Appointment Time
+                      Book Time
                     </span>
                   </div>
                 </th>

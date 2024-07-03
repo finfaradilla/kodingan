@@ -25,6 +25,30 @@ class RescheduleForm extends Component
         $this->fetchAvailableDates($this->doctor_details);
     }
 
+
+    public function updateApprove($id) {
+
+        $updateAppointment = Appointment::find($this->appointment_details->id);
+
+        if (!$updateAppointment) {
+            abort(404, 'Appointment not found');
+        }
+        
+        $updateAppointment->update([
+            'is_complete' => 1,
+        ]);
+
+        session()->flash('message','success approved!');
+
+        if (auth()->user()->role == 0) {
+            return $this->redirect('/my/appointments',navigate: true);
+        } elseif(auth()->user()->role == 1) {
+            return $this->redirect('/doctor/appointments',navigate: true);
+        }else{
+            return $this->redirect('/admin/appointments',navigate: true);
+        }
+    }
+
     public function updateAppointment($slot){
         $carbonDate = Carbon::parse($this->selectedDate)->format('Y-m-d');
         $updateAppointment = Appointment::find($this->appointment_details->id);
@@ -102,19 +126,21 @@ class RescheduleForm extends Component
         $schedule = DoctorSchedule::where('doctor_id', $doctor->id)
             ->where('available_day', $dayOfWeek)
             ->first();
-
+            
         if ($schedule) {
             $fromTime = Carbon::createFromFormat('H:i:s', $schedule->from);
             $toTime = Carbon::createFromFormat('H:i:s', $schedule->to);
 
             $slots = [];
             while ($fromTime->lessThan($toTime)) {
-
                 $timeSlot = $fromTime->format('H:i:s');
+                $timeSlotEndtime = $toTime->format('H:i:s');
+
                 $appointmentExists = Appointment::where('doctor_id',  $doctor->id)
                     ->where('appointment_date', $carbonDate)
                     ->where('appointment_time', $timeSlot)
                     ->exists();
+
                 if (!$appointmentExists) {
                     $slots[] = $timeSlot;
                 }
